@@ -1,14 +1,9 @@
-/* App-local styles. Mesh chrome (settings drawer, self-ref bar) is provided by
- * @baditaflorin/mesh-common/styles.css imported in main.tsx. */
-
 :root {
   color-scheme: dark;
 }
-
 * {
   box-sizing: border-box;
 }
-
 html,
 body,
 #root {
@@ -22,30 +17,107 @@ body,
   -webkit-tap-highlight-color: transparent;
 }
 
-.feature-placeholder {
-  padding: 6rem 1.5rem 2rem;
-  text-align: center;
+.timer-screen {
+  padding: 4rem 1rem 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  max-width: 36rem;
+  margin: 0 auto;
 }
 
-.feature-placeholder h1 {
-  font-size: 1.6rem;
-  margin: 0;
+.timer-screen[data-finished="true"] {
+  background: color-mix(in srgb, var(--mesh-accent) 25%, transparent);
+  animation: pulse 0.5s ease-in-out 3;
+}
+
+@keyframes pulse {
+  50% {
+    background: color-mix(in srgb, var(--mesh-accent) 45%, transparent);
+  }
+}
+
+.timer-header {
+  text-align: center;
+}
+.timer-header h1 {
+  margin: 0 0 0.3rem;
   color: var(--mesh-accent);
+  font-size: 1.5rem;
 }
-
-.feature-placeholder p {
-  max-width: 32rem;
+.timer-status {
   margin: 0;
-  opacity: 0.85;
-  line-height: 1.5;
+  color: var(--mesh-muted);
+  font-size: 0.78rem;
 }
 
-.feature-status {
-  font-size: 0.85rem;
-  opacity: 0.6;
+.timer-big {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: clamp(4rem, 22vw, 8rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--mesh-accent);
   font-variant-numeric: tabular-nums;
+  line-height: 1;
+  padding: 0.5rem 0;
+}
+
+.timer-label-display {
+  font-size: 1.05rem;
+  color: var(--mesh-fg);
+  text-align: center;
+}
+
+.timer-label-input {
+  width: min(280px, 90%);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--mesh-fg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.timer-presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.timer-presets button {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--mesh-fg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.8rem 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.timer-presets button:hover {
+  background: var(--mesh-accent);
+  color: #0b0a06;
+  border-color: var(--mesh-accent);
+}
+
+.timer-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.timer-actions button {
+  background: var(--mesh-accent);
+  color: #0b0a06;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.timer-actions .timer-reset {
+  background: transparent;
+  color: var(--mesh-muted);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
