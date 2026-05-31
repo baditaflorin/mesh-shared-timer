@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createClockSync, type MeshConfig, type YRoom } from "@baditaflorin/mesh-common";
+import { createClockSync, useTone, type MeshConfig, type YRoom } from "@baditaflorin/mesh-common";
 
 type Props = { room: YRoom | null; config: MeshConfig };
 
@@ -42,7 +42,7 @@ export function Feature({ room, config }: Props) {
 function Body({ room }: { room: YRoom; config: MeshConfig }) {
   const [tick, setTick] = useState(0);
   const [labelDraft, setLabelDraft] = useState("");
-  const alarmRef = useRef<AudioContext | null>(null);
+  const tone = useTone();
   const lastAlarmedDeadline = useRef(0);
 
   const clock = useMemo(() => createClockSync(room.provider), [room]);
@@ -81,26 +81,12 @@ function Body({ room }: { room: YRoom; config: MeshConfig }) {
   useEffect(() => {
     if (!finishedJustNow) return;
     lastAlarmedDeadline.current = t.deadlineMs;
-    try {
-      alarmRef.current ??= new AudioContext();
-      const ctx = alarmRef.current;
-      const start = ctx.currentTime;
-      for (let i = 0; i < 3; i++) {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.connect(g).connect(ctx.destination);
-        o.frequency.value = 880;
-        const at = start + i * 0.25;
-        g.gain.setValueAtTime(0.0001, at);
-        g.gain.exponentialRampToValueAtTime(0.4, at + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, at + 0.18);
-        o.start(at);
-        o.stop(at + 0.2);
-      }
-    } catch {
-      // ignored — first run before user gesture
-    }
-  }, [finishedJustNow, t.deadlineMs]);
+    tone.sequence([
+      { freq: 880, at: 0, gain: 0.4, attack: 0.02, duration: 0.18 },
+      { freq: 880, at: 0.25, gain: 0.4, attack: 0.02, duration: 0.18 },
+      { freq: 880, at: 0.5, gain: 0.4, attack: 0.02, duration: 0.18 },
+    ]);
+  }, [finishedJustNow, t.deadlineMs, tone]);
 
   const startTimer = (ms: number) => {
     yTimer.set("state", {
