@@ -1,7 +1,7 @@
 # mesh-shared-timer
 
 [![pages](https://img.shields.io/badge/live-baditaflorin.github.io%2Fmesh-shared-timer-f7b500)](https://baditaflorin.github.io/mesh-shared-timer/)
-[![version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/baditaflorin/mesh-shared-timer/blob/main/package.json)
+[![version](https://img.shields.io/badge/version-0.1.1-blue)](https://github.com/baditaflorin/mesh-shared-timer/blob/main/package.json)
 [![license](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 > Kitchen/classroom/Pomodoro timer — every phone ticks and alarms in unison via mesh clock
