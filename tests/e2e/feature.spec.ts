@@ -7,12 +7,26 @@ const pkg = JSON.parse(readFileSync(new URL("../../package.json", import.meta.ur
 };
 const storagePrefix = pkg.name;
 
-test("starting a timer on peer A shows the countdown on peer B", async ({ browser, baseURL }) => {
+async function chooseAndStart(
+  page: import("@playwright/test").Page,
+  preset: string,
+): Promise<void> {
+  await page.getByRole("button", { name: preset, exact: true }).click();
+  await page.getByRole("button", { name: `Start ${preset}`, exact: true }).click();
+}
+
+test("two peers share the same labelled countdown from setup through start", async ({
+  browser,
+  baseURL,
+}) => {
   const { a, b, cleanup } = await openTwoPeers(browser, baseURL ?? "", { storagePrefix });
   try {
-    // Peer A clicks the 1-minute preset
-    await a.getByRole("button", { name: "1 min" }).click();
-    // Peer B should see a countdown in the high-50-something seconds within mesh sync window
+    await a.getByRole("textbox", { name: "Label (optional)" }).fill("Standup");
+    await chooseAndStart(a, "1 min");
+
+    // This is a real Yjs/WebRTC room: the other browser must receive both the
+    // shared state and its semantic label, not just a locally ticking display.
+    await expect(b.getByRole("heading", { name: "Standup" })).toBeVisible();
     await expect(b.locator(".timer-big")).toContainText(/00:5/);
   } finally {
     await cleanup();
@@ -22,10 +36,10 @@ test("starting a timer on peer A shows the countdown on peer B", async ({ browse
 test("reset on peer A clears countdown on peer B", async ({ browser, baseURL }) => {
   const { a, b, cleanup } = await openTwoPeers(browser, baseURL ?? "", { storagePrefix });
   try {
-    await a.getByRole("button", { name: "5 min", exact: true }).click();
+    await chooseAndStart(a, "5 min");
     await expect(b.locator(".timer-big")).toContainText(/04:5/);
-    await a.getByRole("button", { name: "reset" }).click();
-    await expect(b.locator(".timer-big")).toHaveText("00:00");
+    await a.getByRole("button", { name: "Reset timer", exact: true }).click();
+    await expect(b.getByRole("button", { name: "Start 5 min", exact: true })).toBeVisible();
   } finally {
     await cleanup();
   }
@@ -38,17 +52,17 @@ test("pause on peer A freezes the countdown in unison on both peers", async ({
   const { a, b, cleanup } = await openTwoPeers(browser, baseURL ?? "", { storagePrefix });
   try {
     // Peer A starts a 5-min timer; peer B sees it counting down (cross-peer).
-    await a.getByRole("button", { name: "5 min", exact: true }).click();
+    await chooseAndStart(a, "5 min");
     await expect(b.locator(".timer-big")).toContainText(/04:5/);
 
     // Peer A pauses. The pause writes a single shared `pausedRemainingMs`
     // captured against the MESH clock, so the frozen value is identical on
     // every peer — this is the advertised "in unison via mesh clock" claim.
-    await a.getByRole("button", { name: "pause" }).click();
+    await a.getByRole("button", { name: "Pause timer", exact: true }).click();
 
     // Bob (the opposite peer) must see the resume control appear — proving the
     // paused state crossed the mesh, not just peer A's local React state.
-    await expect(b.getByRole("button", { name: "resume" })).toBeVisible();
+    await expect(b.getByRole("button", { name: "Resume timer", exact: true })).toBeVisible();
 
     // The frozen display must be byte-for-byte equal on both peers. If either
     // peer derived "remaining" from its own local Date.now() instead of the
@@ -63,8 +77,8 @@ test("pause on peer A freezes the countdown in unison on both peers", async ({
     await expect(b.locator(".timer-big")).toHaveText(frozenA ?? "");
 
     // Resuming on A flips both peers back to a live countdown.
-    await a.getByRole("button", { name: "resume" }).click();
-    await expect(b.getByRole("button", { name: "pause" })).toBeVisible();
+    await a.getByRole("button", { name: "Resume timer", exact: true }).click();
+    await expect(b.getByRole("button", { name: "Pause timer", exact: true })).toBeVisible();
   } finally {
     await cleanup();
   }

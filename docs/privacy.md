@@ -6,8 +6,10 @@ This app is a peer-to-peer mesh. Any data that is shared via Yjs (the CRDT) or a
 
 ### What other peers can see
 
-- All Yjs CRDT state: every item, vote, edit, claim, message — whatever the app stores in shared Y.Map / Y.Array structures.
-- Per-peer awareness state: ephemeral presence info (cursor, mood, ms-precision clock pings) for the duration of the connection.
+- The shared timer state: its absolute deadline, whether it is paused, the
+  paused remaining time, and its optional label.
+- Per-peer awareness state: ephemeral presence information and mesh-clock
+  pings for the duration of the connection.
 - Your peer ID, a transient WebRTC client ID. Not tied to a user account.
 
 ### What the self-hosted infra can see
