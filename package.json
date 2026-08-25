@@ -1,7 +1,7 @@
 {
   "name": "mesh-shared-timer",
   "version": "0.1.1",
-  "description": "Kitchen/classroom/Pomodoro timer — every phone ticks and alarms in unison via mesh clock",
+  "description": "A calm shared countdown that keeps every device in the room on the same clock.",
   "type": "module",
   "private": false,
   "homepage": "https://baditaflorin.github.io/mesh-shared-timer/",
@@ -28,7 +28,8 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:install": "playwright install chromium",
-    "test:leak": "MESH_RUN_LEAK_TEST=1 playwright test tests/e2e/memory-leak.spec.ts"
+    "test:leak": "MESH_RUN_LEAK_TEST=1 playwright test tests/e2e/memory-leak.spec.ts",
+    "demo:record": "DEMO_SCENARIO=tests/demo/scenario.mjs DEMO_OUT=docs bash ../mesh-common/scripts/record-demo.sh"
   },
   "dependencies": {
     "@baditaflorin/mesh-common": "file:../mesh-common",
@@ -44,12 +45,17 @@
     "@types/node": "^22.10.0",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
+    "@vitejs/plugin-react": "^5.2.0",
     "jsdom": "^26.0.0",
     "prettier": "^3.7.4",
     "typescript": "^5.9.3",
-    "vite": "^7.0.0",
-    "vitest": "^2.1.0"
+    "vite": "^7.3.6",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "nanoid": "3.3.18",
+    "postcss": "8.5.26",
+    "ws": "8.21.3"
   },
   "engines": {
     "node": ">=22"

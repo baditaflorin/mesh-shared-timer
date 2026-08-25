@@ -1,123 +1,361 @@
 :root {
   color-scheme: dark;
+  background: #10151d;
 }
+
 * {
   box-sizing: border-box;
 }
+
 html,
 body,
 #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
   width: 100%;
+  min-height: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
   background: var(--mesh-bg);
   color: var(--mesh-fg);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-family: var(--mesh-font-sans, ui-sans-serif, system-ui, sans-serif);
   -webkit-tap-highlight-color: transparent;
 }
 
-.timer-screen {
-  padding: 4rem 1rem 5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  max-width: 36rem;
-  margin: 0 auto;
+button,
+input {
+  font: inherit;
 }
 
-.timer-screen[data-finished="true"] {
-  background: color-mix(in srgb, var(--mesh-accent) 25%, transparent);
-  animation: pulse 0.5s ease-in-out 3;
-}
-
-@keyframes pulse {
-  50% {
-    background: color-mix(in srgb, var(--mesh-accent) 45%, transparent);
-  }
-}
-
-.timer-header {
-  text-align: center;
-}
-.timer-header h1 {
-  margin: 0 0 0.3rem;
-  color: var(--mesh-accent);
-  font-size: 1.5rem;
-}
-.timer-status {
-  margin: 0;
-  color: var(--mesh-muted);
-  font-size: 0.78rem;
-}
-
-.timer-big {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: clamp(4rem, 22vw, 8rem);
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--mesh-accent);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  padding: 0.5rem 0;
-}
-
-.timer-label-display {
-  font-size: 1.05rem;
-  color: var(--mesh-fg);
-  text-align: center;
-}
-
-.timer-label-input {
-  width: min(280px, 90%);
-  background: rgba(0, 0, 0, 0.3);
-  color: var(--mesh-fg);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  padding: 0.45rem 1rem;
-  text-align: center;
-  font-size: 0.95rem;
-}
-
-.timer-presets {
+.timer-page {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  width: min(100%, 48rem);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: 0 max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+.timer-page-connecting {
+  place-items: center;
+}
+
+.timer-connection-card {
+  display: grid;
+  width: min(100%, 29rem);
+  gap: 0.9rem;
+}
+
+.timer-connection-card h1,
+.timer-connection-card p {
+  margin: 0;
+}
+
+.timer-connection-card h1 {
+  font-size: clamp(2rem, 7vw, 3.3rem);
+  letter-spacing: -0.055em;
+}
+
+.timer-connection-card p {
+  color: var(--mesh-muted);
+  line-height: 1.5;
+}
+
+/* Keep the app's first decision in the actual inset content area. The shared
+ * launch primitive is intentionally taller by default for generic apps. */
+.timer-entry.mesh-launch {
+  width: min(100%, 42rem);
+  min-height: 100%;
+  padding: clamp(1.5rem, 4.5vh, 3.25rem) clamp(1rem, 5vw, 3rem) clamp(1rem, 2.5vh, 1.75rem);
+  border: 1px solid color-mix(in srgb, var(--mesh-border) 82%, transparent);
+  background:
+    radial-gradient(
+      circle at 84% 8%,
+      color-mix(in srgb, var(--mesh-accent) 12%, transparent),
+      transparent 26rem
+    ),
+    linear-gradient(145deg, var(--mesh-surface-raised), var(--mesh-canvas));
+}
+
+.timer-entry .mesh-launch-content {
+  gap: clamp(0.75rem, 1.7vh, 1.15rem);
+}
+
+.timer-entry .mesh-launch-header {
+  gap: 0.48rem;
+}
+
+.timer-entry .mesh-launch h1,
+.timer-entry h1 {
+  max-width: none;
+  font-size: clamp(2.35rem, 7vw, 4.15rem);
+}
+
+.timer-entry .mesh-launch-promise {
+  max-width: 34rem;
+  font-size: clamp(0.94rem, 2.2vw, 1.06rem);
+  line-height: 1.48;
+}
+
+.timer-entry-signals,
+.timer-stage-signals {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+  align-items: center;
+}
+
+.timer-entry .mesh-launch-presence {
   width: 100%;
 }
 
-.timer-presets button {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--mesh-fg);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  padding: 0.8rem 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
+.timer-setup-card {
+  display: grid;
+  gap: 0.85rem;
+  background: color-mix(in srgb, var(--mesh-surface) 72%, transparent);
 }
 
-.timer-presets button:hover {
-  background: var(--mesh-accent);
-  color: #0b0a06;
-  border-color: var(--mesh-accent);
+.timer-setup-summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--mesh-muted);
+  font-size: 0.81rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.timer-setup-summary strong {
+  color: var(--mesh-fg);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 1.18rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.timer-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.timer-preset {
+  min-width: 0;
+  padding-inline: 0.35rem;
+  white-space: nowrap;
+}
+
+.timer-preset[aria-pressed="true"] {
+  box-shadow: 0 0.35rem 1.1rem color-mix(in srgb, var(--mesh-accent) 24%, transparent);
+}
+
+.timer-label-input .mesh-name-input-label {
+  color: var(--mesh-muted);
+  font-size: 0.77rem;
+  font-weight: 650;
+  opacity: 1;
+}
+
+.timer-label-input .mesh-name-input-field {
+  border-color: color-mix(in srgb, var(--mesh-border) 80%, transparent);
+  background: color-mix(in srgb, var(--mesh-canvas) 46%, transparent);
+}
+
+.timer-entry .mesh-launch-actions {
+  align-items: center;
+}
+
+.timer-entry .mesh-launch-action-primary {
+  box-shadow: 0 0.6rem 1.8rem color-mix(in srgb, var(--mesh-accent) 25%, transparent);
+}
+
+.timer-entry .mesh-launch-connection {
+  color: var(--mesh-muted);
+}
+
+.timer-page-stage {
+  place-items: center;
+  padding-top: clamp(1.25rem, 4vh, 2.5rem);
+}
+
+.timer-stage-layout {
+  display: grid;
+  width: min(100%, 42rem);
+  gap: clamp(0.9rem, 2.6vh, 1.5rem);
+}
+
+.timer-stage-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.timer-stage-header h1,
+.timer-stage-eyebrow,
+.timer-stage-caption,
+.timer-stage-note {
+  margin: 0;
+}
+
+.timer-stage-eyebrow,
+.timer-stage-caption {
+  color: var(--mesh-muted);
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.timer-stage-header h1 {
+  max-width: 21ch;
+  margin-top: 0.25rem;
+  font-size: clamp(1.75rem, 5vw, 2.8rem);
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.timer-stage {
+  display: grid;
+  min-height: clamp(16rem, 41vh, 25rem);
+  place-items: center;
+  align-content: center;
+  gap: 0.9rem;
+  text-align: center;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      color-mix(in srgb, var(--mesh-accent) 11%, transparent),
+      transparent 58%
+    ),
+    var(--mesh-surface-raised);
+}
+
+.timer-stage[data-finished="true"] {
+  border-color: color-mix(in srgb, var(--mesh-success) 60%, var(--mesh-border));
+}
+
+.timer-big {
+  color: var(--mesh-fg);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: clamp(4.7rem, 15vw, 10.5rem);
+  font-weight: 560;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.085em;
+  line-height: 0.9;
+  text-shadow: 0 0.6rem 2rem color-mix(in srgb, var(--mesh-accent) 15%, transparent);
+}
+
+.timer-stage-note {
+  max-width: 31rem;
+  color: var(--mesh-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
 }
 
 .timer-actions {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
 }
-.timer-actions button {
-  background: var(--mesh-accent);
-  color: #0b0a06;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
+
+@media (max-width: 36rem) {
+  .timer-page {
+    padding-inline: 0;
+  }
+
+  .timer-entry.mesh-launch {
+    min-height: 100%;
+    padding: 1.35rem 1rem max(1rem, env(safe-area-inset-bottom));
+    border-inline: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .timer-entry .mesh-launch-content {
+    gap: 0.72rem;
+  }
+
+  .timer-entry .mesh-launch h1,
+  .timer-entry h1 {
+    font-size: clamp(2.25rem, 11vw, 3rem);
+  }
+
+  .timer-setup-card {
+    gap: 0.72rem;
+  }
+
+  .timer-preset-grid {
+    gap: 0.35rem;
+  }
+
+  .timer-preset {
+    font-size: 0.76rem;
+  }
+
+  .timer-page-stage {
+    padding: 1.25rem 1rem max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .timer-stage {
+    min-height: clamp(15rem, 42vh, 21rem);
+  }
+
+  .timer-stage-signals {
+    width: 100%;
+  }
+
+  .timer-actions .mesh-button {
+    width: 100%;
+  }
 }
-.timer-actions .timer-reset {
-  background: transparent;
-  color: var(--mesh-muted);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+
+@media (min-width: 36.0625rem) and (max-height: 44rem) {
+  .timer-entry.mesh-launch {
+    min-height: 100%;
+    padding: 1.15rem clamp(1.25rem, 4vw, 2.2rem) 1rem;
+  }
+
+  .timer-entry .mesh-launch-content {
+    gap: 0.62rem;
+  }
+
+  .timer-entry .mesh-launch-header {
+    gap: 0.3rem;
+  }
+
+  .timer-entry .mesh-launch h1,
+  .timer-entry h1 {
+    font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+  }
+
+  .timer-setup-card {
+    gap: 0.58rem;
+  }
+
+  .timer-label-input .mesh-name-input-field {
+    padding-block: 0.5rem;
+  }
+
+  .timer-entry .mesh-launch-action {
+    min-height: 2.6rem;
+    padding-block: 0.58rem;
+  }
+
+  .timer-stage {
+    min-height: 14rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timer-preset[aria-pressed="true"],
+  .timer-entry .mesh-launch-action-primary {
+    box-shadow: none;
+  }
 }
