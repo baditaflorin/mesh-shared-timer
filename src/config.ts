@@ -2,6 +2,7 @@ import { createMeshConfig } from "@baditaflorin/mesh-common";
 
 export const config = createMeshConfig({
   appName: "mesh-shared-timer",
+  breadcrumbs: false,
   displayName: "Shared Timer",
   visualProfile: "utility",
   shellLayout: "inset",
